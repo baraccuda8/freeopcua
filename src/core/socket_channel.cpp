@@ -39,9 +39,9 @@ OpcUa::SocketChannel::SocketChannel(int sock, const Common::Logger::SharedPtr& l
   int flag = 1;
   setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char *) &flag, sizeof(int));
 
-  LOG_CRITICAL(Logger, "{:90}| -->Start", FUNCTION_LINE_NAME);
   if (Socket < 0)
     {
+      LOG_CRITICAL(Logger, "{:90}| --> {}", FUNCTION_LINE_NAME, Socket);
       THROW_ERROR(CannotCreateChannelOnInvalidSocket);
     }
 }
@@ -53,7 +53,7 @@ OpcUa::SocketChannel::~SocketChannel()
 
 void OpcUa::SocketChannel::Stop()
 {
-  LOG_CRITICAL(Logger, "{:90}| Stop", FUNCTION_LINE_NAME);
+  //LOG_CRITICAL(Logger, "{:90}| Stop", FUNCTION_LINE_NAME);
 #ifdef _WIN32
   closesocket(Socket);
 #else

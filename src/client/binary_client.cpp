@@ -103,8 +103,8 @@ namespace
 
         if (doneEvent.wait_for(lock, msec) == std::cv_status::timeout)
         { 
-            LOG_CRITICAL(Logger, "{:90}| -->| Response timed out {}", FUNCTION_LINE_NAME, msec);
-            //throw std::runtime_error(FUNCTION_LINE_NAME + "| Response timed out");
+            //LOG_CRITICAL(Logger, "{:90}| -->| Response timed out {}", FUNCTION_LINE_NAME, msec);
+            throw std::runtime_error(FUNCTION_LINE_NAME + "| Response timed out");
             return result;
         }
 
@@ -895,9 +895,9 @@ namespace
 
             try
             {
-                LOG_CRITICAL(Logger, "{:90}| -->WaitForData {}", FUNCTION_LINE_NAME, request.Header.Timeout);
+                //LOG_CRITICAL(Logger, "{:90}| -->WaitForData {}", FUNCTION_LINE_NAME, request.Header.Timeout);
                 res = requestCallback.WaitForData(std::chrono::milliseconds(request.Header.Timeout));
-                LOG_CRITICAL(Logger, "{:90}| <--WaitForData {}", FUNCTION_LINE_NAME, request.Header.Timeout);
+                //LOG_CRITICAL(Logger, "{:90}| <--WaitForData {}", FUNCTION_LINE_NAME, request.Header.Timeout);
             }
             catch(std::exception& ex)
             {
@@ -929,18 +929,18 @@ namespace
             hdr.AddSize(RawSize(sequence));
             hdr.AddSize(RawSize(request));
 
-            LOG_CRITICAL(Logger, "{:90}| -->Stream: {}", FUNCTION_LINE_NAME, hdr.Size);
+            //LOG_CRITICAL(Logger, "{:90}| -->Stream: {}", FUNCTION_LINE_NAME, hdr.Size);
             Stream << hdr << algorithmHeader << sequence << request << flush;
         }
 
         void Receive()
         {
-            LOG_CRITICAL(Logger, "{:90}| -->Receive()", FUNCTION_LINE_NAME);
+            //LOG_CRITICAL(Logger, "{:90}| -->Receive()", FUNCTION_LINE_NAME);
             
             Binary::SecureHeader responseHeader;
-            LOG_CRITICAL(Logger, "{:90}| -->Stream: {}", FUNCTION_LINE_NAME, RawSize(responseHeader));
+            //LOG_CRITICAL(Logger, "{:90}| -->Stream: {}", FUNCTION_LINE_NAME, RawSize(responseHeader));
             Stream >> responseHeader;
-            LOG_CRITICAL(Logger, "{:90}| <--Stream: received message: Type: {}, ChunkType: {}, Size: {}, ChannelId: {}", FUNCTION_LINE_NAME, responseHeader.Type, responseHeader.Chunk, responseHeader.Size, responseHeader.ChannelId);
+            //LOG_CRITICAL(Logger, "{:90}| <--Stream: received message: Type: {}, ChunkType: {}, Size: {}, ChannelId: {}", FUNCTION_LINE_NAME, responseHeader.Type, responseHeader.Chunk, responseHeader.Size, responseHeader.ChannelId);
 
             LOG_DEBUG(Logger, "{:90}| received message: Type: {}, ChunkType: {}, Size: {}, ChannelId: {}", FUNCTION_LINE_NAME, responseHeader.Type, responseHeader.Chunk, responseHeader.Size, responseHeader.ChannelId);
 
@@ -949,9 +949,9 @@ namespace
             if(responseHeader.Type == MessageType::MT_SECURE_OPEN)
             {
                 AsymmetricAlgorithmHeader responseAlgo;
-                LOG_CRITICAL(Logger, "{:90}| -->Stream: MT_SECURE_OPEN", FUNCTION_LINE_NAME, RawSize(responseAlgo));
+                //LOG_CRITICAL(Logger, "{:90}| -->Stream: MT_SECURE_OPEN", FUNCTION_LINE_NAME, RawSize(responseAlgo));
                 Stream >> responseAlgo;
-                LOG_CRITICAL(Logger, "{:90}| <--Stream: MT_SECURE_OPEN", FUNCTION_LINE_NAME, RawSize(responseAlgo));
+                //LOG_CRITICAL(Logger, "{:90}| <--Stream: MT_SECURE_OPEN", FUNCTION_LINE_NAME, RawSize(responseAlgo));
                 algo_size = RawSize(responseAlgo);
             }
 
@@ -964,7 +964,7 @@ namespace
                 std::stringstream stream;
                 stream << "| Received error message from server: " << ToString(error) << ", " << msg;
 
-                LOG_CRITICAL(Logger, "{:90}| -->Stream: MT_ERROR, Received error message from server: {}, {}", FUNCTION_LINE_NAME, ToString(error), msg);
+                //LOG_CRITICAL(Logger, "{:90}| -->Stream: MT_ERROR, Received error message from server: {}, {}", FUNCTION_LINE_NAME, ToString(error), msg);
 
                 throw std::runtime_error(FUNCTION_LINE_NAME + stream.str());
             }
@@ -972,24 +972,24 @@ namespace
             else //(responseHeader.Type == MessageType::MT_SECURE_MESSAGE )
             {
                 Binary::SymmetricAlgorithmHeader responseAlgo;
-                LOG_CRITICAL(Logger, "{:90}| -->Stream: responseAlgo {}", FUNCTION_LINE_NAME, RawSize(responseAlgo));
+                //LOG_CRITICAL(Logger, "{:90}| -->Stream: responseAlgo {}", FUNCTION_LINE_NAME, RawSize(responseAlgo));
                 Stream >> responseAlgo;
                 algo_size = RawSize(responseAlgo);
-                LOG_CRITICAL(Logger, "{:90}| <--Stream: responseAlgo {}", FUNCTION_LINE_NAME, algo_size);
+                //LOG_CRITICAL(Logger, "{:90}| <--Stream: responseAlgo {}", FUNCTION_LINE_NAME, algo_size);
             }
 
             NodeId id;
             Binary::SequenceHeader responseSequence;
-            LOG_CRITICAL(Logger, "{:90}| -->Stream: SequenceHeader {}", FUNCTION_LINE_NAME, RawSize(responseSequence));
+            //LOG_CRITICAL(Logger, "{:90}| -->Stream: SequenceHeader {}", FUNCTION_LINE_NAME, RawSize(responseSequence));
             Stream >> responseSequence; // TODO Check for request Number
-            LOG_CRITICAL(Logger, "{:90}| <--Stream: SequenceHeader {}", FUNCTION_LINE_NAME, RawSize(responseSequence));
+            //LOG_CRITICAL(Logger, "{:90}| <--Stream: SequenceHeader {}", FUNCTION_LINE_NAME, RawSize(responseSequence));
 
             const std::size_t expectedHeaderSize = RawSize(responseHeader) + algo_size + RawSize(responseSequence);
 
             if(expectedHeaderSize >= responseHeader.Size)
             {
                 std::stringstream stream;
-                LOG_CRITICAL(Logger, "{:90}| <--Stream: Error SequenceHeader {} >= {}", FUNCTION_LINE_NAME, expectedHeaderSize,  responseHeader.Size);
+                //LOG_CRITICAL(Logger, "{:90}| <--Stream: Error SequenceHeader {} >= {}", FUNCTION_LINE_NAME, expectedHeaderSize,  responseHeader.Size);
                 stream << "| Size of received message " << responseHeader.Size << " bytes is invalid. Expected size " << expectedHeaderSize << " bytes";
                 throw std::runtime_error(FUNCTION_LINE_NAME + stream.str());
             }
@@ -1021,7 +1021,7 @@ namespace
                 parseMessage(dataSize, id);
                 firstMsgParsed = true;
             }
-            LOG_CRITICAL(Logger, "{:90}| <--Receive()", FUNCTION_LINE_NAME);
+            //LOG_CRITICAL(Logger, "{:90}| <--Receive()", FUNCTION_LINE_NAME);
         }
 
         void parseMessage(std::size_t& dataSize, NodeId& id)
@@ -1166,9 +1166,9 @@ namespace
         const SequenceHeader sequence = CreateSequenceHeader();
         hdr.AddSize(RawSize(sequence));
 
-        LOG_CRITICAL(Logger, "{:90}| -->Stream: {}", FUNCTION_LINE_NAME, hdr.Size);
+        //LOG_CRITICAL(Logger, "{:90}| -->Stream: {}", FUNCTION_LINE_NAME, hdr.Size);
         Stream << hdr << algorithmHeader << sequence << request << flush;
-        LOG_CRITICAL(Logger, "{:90}| <--Stream: {}", FUNCTION_LINE_NAME, hdr.Size);
+        //LOG_CRITICAL(Logger, "{:90}| <--Stream: {}", FUNCTION_LINE_NAME, hdr.Size);
     }
 
 }// namespace

@@ -98,7 +98,7 @@ public:
   virtual void Send(const char * message, std::size_t size)
   {
     LOG_TRACE(Logger, "{:90}| binary_connection     | send: {}", FUNCTION_LINE_NAME, OpcUa::ToHexDump(message, size));
-    LOG_CRITICAL(Logger, "{:90}| -->send: {}", FUNCTION_LINE_NAME, size);
+    //LOG_CRITICAL(Logger, "{:90}| -->send: {}", FUNCTION_LINE_NAME, size);
     return Channel.Send(message, size);
   }
 

@@ -33,9 +33,9 @@ Subscription::Subscription(Services::SharedPtr server, const CreateSubscriptionP
   request.Parameters = params;
   Services::SharedPtr serverptr = Server;
   ;
-  LOG_CRITICAL(Logger, " -->CreateSubscription Interval {}", params.RequestedPublishingInterval);
+  //LOG_CRITICAL(Logger, " -->CreateSubscription Interval {}", params.RequestedPublishingInterval);
   Data = Server->Subscriptions()->CreateSubscription(request, [this, serverptr](PublishResult i) { this->PublishCallback(serverptr, i); });
-  LOG_CRITICAL(Logger, "<--CreateSubscription Interval {}", params.RequestedPublishingInterval);
+  //LOG_CRITICAL(Logger, "<--CreateSubscription Interval {}", params.RequestedPublishingInterval);
   //After creating the subscription, it is expected to send at least one publish request
   Server->Subscriptions()->Publish(PublishRequest());
   //Server->Subscriptions()->Publish(PublishRequest());

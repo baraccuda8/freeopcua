@@ -17,19 +17,75 @@
 #include <opc/spdlog/fmt/ostr.h>
 #endif
 
-#define FUNCTION_LINE_NAME (std::string( __FUNCTION__ ) + std::string (":") + std::to_string(__LINE__))
-
-#define __FUN(__s) (FUNCTION_LINE_NAME + "| " + __s).c_str()
-//#define FLN			std::string (std::string( "(File: ") + std::string ( __FILE__ ) + std::string( ";Function: ") + std::string ( __FUNCTION__ ) + std::string ( ";Line: ") + std::to_string(__LINE__) + std::string (";)"))
-//#define FLN2		std::string (std::string("\nFile: ") + std::string ( __FILE__ ) + std::string("\nFunction: ") + std::string ( __FUNCTION__ ) + std::string ("\nLine: ") + std::to_string(__LINE__) + std::string ("\n")) 
-
 namespace Common
 {
+	namespace Logger {
+		DEFINE_CLASS_POINTERS(spdlog::logger)
+	};
+}
 
-namespace Logger {
-  DEFINE_CLASS_POINTERS(spdlog::logger)
-};
+#define FUNCTION_LINE_NAME (std::string(__FUNCTION__) + std::string (":") + std::to_string(__LINE__))
+#define __FUN(__s) (FUNCTION_LINE_NAME + "| " + __s).c_str()
 
+
+template <typename... Args>
+inline void LOG_TRACE2(std::shared_ptr<spdlog::logger> logger, const Args&... args)
+{
+    if(logger && logger->should_log(spdlog::level::info))
+    {
+        logger->trace(args);
+        logger->flush();
+    }
+}
+
+template <typename... Args>
+inline void LOG_DEBUG2(std::shared_ptr<spdlog::logger> logger, const Args&... args)
+{
+    if(logger && logger->should_log(spdlog::level::info))
+    {
+        logger->debug(args);
+        logger->flush();
+    }
+}
+
+template <typename... Args>
+inline void LOG_INFO2(std::shared_ptr<spdlog::logger> logger, const Args&... args)
+{
+    if(logger && logger->should_log(spdlog::level::info))
+    {
+        logger->info(args);
+        logger->flush();
+    }
+}
+
+template <typename... Args>
+inline void LOG_WARN2(std::shared_ptr<spdlog::logger> logger, const Args&... args)
+{
+    if(logger && logger->should_log(spdlog::level::info))
+    {
+        logger->warn(args);
+        logger->flush();
+    }
+}
+
+template <typename... Args>
+inline void LOG_ERROR2(std::shared_ptr<spdlog::logger> logger, const Args&... args)
+{
+    if(logger && logger->should_log(spdlog::level::info))
+    {
+        logger->error(args);
+        logger->flush();
+    }
+}
+
+template <typename... Args>
+inline void LOG_CRITICAL2(std::shared_ptr<spdlog::logger> logger, const Args&... args)
+{
+    if(logger && logger->should_log(spdlog::level::info))
+    {
+        logger->critical(args);
+        logger->flush();
+    }
 }
 
 #define LOG_TRACE(__logger__, ...) { if (__logger__ && __logger__->should_log(spdlog::level::trace)) { __logger__->trace(__VA_ARGS__); __logger__->flush();}}
@@ -38,6 +94,19 @@ namespace Logger {
 #define LOG_WARN(__logger__, ...) { if (__logger__ && __logger__->should_log(spdlog::level::warn)) { __logger__->warn(__VA_ARGS__); __logger__->flush();}}
 #define LOG_ERROR(__logger__, ...) { if (__logger__ && __logger__->should_log(spdlog::level::err)) { __logger__->error(__VA_ARGS__); __logger__->flush();}}
 #define LOG_CRITICAL(__logger__, ...) { if (__logger__ && __logger__->should_log(spdlog::level::critical)) { __logger__->critical(__VA_ARGS__); __logger__->flush();}}
+
+inline void fqwerty()
+{
+    std::shared_ptr<spdlog::logger> AllLogger = NULL;
+    LOG_TRACE(AllLogger, "{:90|} Старт {}", FUNCTION_LINE_NAME);
+
+//	LOG_DEBUG(AllLogger, "", "");
+//	LOG_INFO(AllLogger, "", "");
+//	LOG_WARN(AllLogger, "", "");
+//	LOG_ERROR(AllLogger, "", "");
+//	LOG_CRITICAL(AllLogger, "", "");
+//
+}
 
 
 //#define LOGGER_TRACE(__logger__, ...) \

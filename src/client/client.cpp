@@ -342,8 +342,8 @@ namespace OpcUa
 
     UaClient::~UaClient()
     {
-      //Disconnect();//Do not leave any thread or connection running
-        Abort();
+      Disconnect();//Do not leave any thread or connection running
+      //Abort();
     }
 
     void UaClient::Disconnect()

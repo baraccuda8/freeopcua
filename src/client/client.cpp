@@ -352,9 +352,10 @@ namespace OpcUa
 
         if(Server.get())
         {
-            CloseSessionResponse response = Server->CloseSession();
-
-            LOG_INFO(Logger, "{:90}| CloseSession response is {}", FUNCTION_LINE_NAME, ToString(response.Header.ServiceResult));
+            try {
+                CloseSessionResponse response = Server->CloseSession();
+                LOG_INFO(Logger, "{:90}| CloseSession response is {}", FUNCTION_LINE_NAME, ToString(response.Header.ServiceResult));
+            } catch(...) { };
 
             CloseSecureChannel();
             Server.reset();

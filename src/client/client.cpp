@@ -85,6 +85,7 @@ namespace OpcUa
         }
 
         Running = false;
+        
 
         LOG_INFO(Logger, "{:90}| stopped", FUNCTION_LINE_NAME);
     }
@@ -343,24 +344,19 @@ namespace OpcUa
     UaClient::~UaClient()
     {
       Disconnect();//Do not leave any thread or connection running
-      //Abort();
     }
 
     void UaClient::Disconnect()
     {
-        KeepAlive.Stop();
+        try {
+            KeepAlive.Stop();
 
-        if(Server.get())
-        {
-            try {
-                CloseSessionResponse response = Server->CloseSession();
-                LOG_INFO(Logger, "{:90}| CloseSession response is {}", FUNCTION_LINE_NAME, ToString(response.Header.ServiceResult));
-            } catch(...) { };
+            CloseSessionResponse response = Server->CloseSession();
+            LOG_INFO(Logger, "{:90}| CloseSession response is {}", FUNCTION_LINE_NAME, ToString(response.Header.ServiceResult));
 
             CloseSecureChannel();
             Server.reset();
-        }
-
+        } catch(...) { };
     }
 
 
@@ -480,12 +476,13 @@ namespace OpcUa
         return results;
     }
 
-    Subscription::SharedPtr UaClient::CreateSubscription(unsigned int period, SubscriptionHandler& callback)
+    Subscription* UaClient::CreateSubscription(unsigned int period, SubscriptionHandler& callback)
     {
         CreateSubscriptionParameters params;
         params.RequestedPublishingInterval = period;
 
-        return std::make_shared<Subscription>(Server, params, callback, Logger);
+        return new Subscription(Server, params, callback, Logger);
+        //return std::make_shared<Subscription>(Server, params, callback, Logger);
     }
 
     ServerOperations UaClient::CreateServerOperations()

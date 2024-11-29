@@ -154,7 +154,7 @@ public:
   /// @brief Create a subscription objects
   // returned object can then be used to subscribe
   // to datachange or custom events from server
-  Subscription::SharedPtr CreateSubscription(unsigned int period, SubscriptionHandler & client);
+  Subscription* CreateSubscription(unsigned int period, SubscriptionHandler & client);
 
   /// @brief Create a server operations object
   ServerOperations CreateServerOperations();

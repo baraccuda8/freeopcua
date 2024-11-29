@@ -863,7 +863,6 @@ namespace
 
                 Stream << hdr << algorithmHeader << sequence << request << flush;
             }
-
             catch(const std::exception& exc)
             {
                 LOG_WARN(Logger, "closing secure channel failed with: {}", FUNCTION_LINE_NAME, exc.what());

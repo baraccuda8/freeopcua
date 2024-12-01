@@ -33,6 +33,7 @@
 *.app
 *.aps
 *.pdb
+*.idb
 /bin
 /old
 /.vs
